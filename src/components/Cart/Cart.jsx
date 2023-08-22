@@ -1,9 +1,12 @@
 import CartContext from "../../store/cart-context";
 import Modal from "../UI/Modal";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import CartItem from "./CartItem";
+import Checkout from "../Checkout/Checkout";
 
 const Cart = (props) => {
+  const [isOrdering, setIsOrdering] = useState(false);
+  const [hasOrdered, setHasOrdered] = useState(false);
   const cartCtx = useContext(CartContext);
   const totalAmount = `£${cartCtx.totalAmount.toFixed(2)}`;
   const hasItems = cartCtx.items.length > 0;
@@ -31,6 +34,29 @@ const Cart = (props) => {
     </ul>
   );
 
+  const onStartOrderHandler = () => {
+    setIsOrdering(true);
+  };
+
+  const cartButtons = (
+    <div className="text-right">
+      <button
+        onClick={props.onHideCart}
+        className="cursor-pointer border border-solid border-[#8a2b06] py-2 px-8 rounded-3xl ml-4 active:bg-[#5a1a01] active:border-[#5a1a01] active:text-white hover:bg-[#5a1a01] text-[#8a2b06] hover:border-[#5a1a01] hover:text-white"
+      >
+        Close
+      </button>
+      {hasItems && (
+        <button
+          onClick={onStartOrderHandler}
+          className="cursor-pointer border border-solid bg-[#8a2b06] border-[#8a2b06] py-2 px-8 rounded-3xl ml-4 active:bg-[#5a1a01] active:border-[#5a1a01] active:text-white hover:bg-[#5a1a01] text-white hover:border-[#5a1a01] hover:text-white"
+        >
+          CheckOut
+        </button>
+      )}
+    </div>
+  );
+
   return (
     <Modal onClose={props.onHideCart}>
       {cartItems}
@@ -38,19 +64,9 @@ const Cart = (props) => {
         <span>Total Amount</span>
         <span>{totalAmount}</span>
       </div>
-      <div className="text-right">
-        <button
-          onClick={props.onHideCart}
-          className="cursor-pointer border border-solid border-[#8a2b06] py-2 px-8 rounded-3xl ml-4 active:bg-[#5a1a01] active:border-[#5a1a01] active:text-white hover:bg-[#5a1a01] text-[#8a2b06] hover:border-[#5a1a01] hover:text-white"
-        >
-          Close
-        </button>
-        {hasItems && (
-          <button className="cursor-pointer border border-solid bg-[#8a2b06] border-[#8a2b06] py-2 px-8 rounded-3xl ml-4 active:bg-[#5a1a01] active:border-[#5a1a01] active:text-white hover:bg-[#5a1a01] text-white hover:border-[#5a1a01] hover:text-white">
-            Order
-          </button>
-        )}
-      </div>
+      {!isOrdering && cartButtons}
+
+      {isOrdering && <Checkout onClose={props.onHideCart} />}
     </Modal>
   );
 };
