@@ -1,15 +1,6 @@
 import React, { useEffect } from "react";
-import UseInput from "./UseInput";
 
 function Checkout(props) {
-  const {
-    value: nameValue,
-    isTouched: nameIsTouched,
-    hasError: nameHasError,
-    onBlurHandler: nameBlurHandler,
-    onInputHandler: nameInputHander,
-    onResetHandler: nameResetHandler,
-  } = UseInput();
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
@@ -35,6 +26,8 @@ function Checkout(props) {
           value={nameValue}
          />
         </div>
+
+        
         <div className="flex justify-end gap-4">
           <button
             onClick={props.onHideCart}
