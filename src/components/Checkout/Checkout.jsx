@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import UseInput from "./UseInput";
 
 function Checkout(props) {
@@ -9,7 +9,7 @@ function Checkout(props) {
     onBlurHandler: nameBlurHandler,
     onInputHandler: nameInputHander,
     onResetHandler: nameResetHandler,
-  } = UseInput(value => value.trim() !== "");
+  } = UseInput();
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
@@ -21,13 +21,8 @@ function Checkout(props) {
 
   const formIsValid = !nameHasError && nameIsTouched;
 
-  let nameInputClass = "border border-[#ccc] rounded-2xl max-w-full"
-  let nameLabelClass = "font-bold mb-1 block"
-
-  if (nameHasError) {
-    nameInputClass = "bg-[#ffeff1] border border-[#aa0b20] rounded-2xl max-w-full"
-    nameLabelClass = "font-bold mb-1 block text-[#ca3e51]"
-  }
+    const nameInputClass = nameHasError ? "bg-[#ffeff1] border border-[#aa0b20] rounded-2xl max-w-full" : "border border-[#ccc] rounded-2xl max-w-full"
+    const nameLabelClass = nameHasError ? "font-bold mb-1 block text-[#ca3e51]" : "font-bold mb-1 block"
 
   return (
       <form className="m-4 h-[17rem] overflow-auto">

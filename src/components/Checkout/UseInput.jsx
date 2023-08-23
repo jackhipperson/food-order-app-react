@@ -15,12 +15,9 @@ const reducer = (state, action) => {
   return defaultInput;
 };
 
-function UseInput(validateInput) {
+function UseInput() {
 
   const [enteredInput, dispatch] = useReducer(reducer, defaultInput);
-
-  const isValid = validateInput(enteredInput.inputValue)
-  const hasError = !isValid && enteredInput.isTouched
 
   const onBlurHandler = () => {
     dispatch({
@@ -39,6 +36,9 @@ function UseInput(validateInput) {
         type: "RESET"
     })
   }
+
+  const isValid = enteredInput.inputValue.trim() !== "";
+  const hasError = !isValid && enteredInput.isTouched
 
   return {
     value: enteredInput.inputValue,
