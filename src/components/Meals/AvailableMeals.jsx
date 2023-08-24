@@ -24,7 +24,6 @@ const AvailableMeals = () => {
       const menu_array = [];
       for (const key in data) {
         menu_array.push({
-          key: key,
           id: key,
           name: data[key].name,
           description: data[key].description,
@@ -44,15 +43,14 @@ const AvailableMeals = () => {
   }, [fetchMenuItems]);
 
   const mealsList = menuItems.map((meal) => (
-    <>
+    <div key={meal.id} >
       <MealItem
-        key={meal.key}
         id={meal.id}
         name={meal.name}
         description={meal.description}
         price={meal.price}
       />
-    </>
+    </div>
   ));
 
   let content = <p>No items found.</p>;

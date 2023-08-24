@@ -44,6 +44,13 @@ function Checkout(props) {
       if (!formIsValid) {
         return;
       }
+
+      props.onSubmit({
+        name:enteredName,
+        street:enteredStreet,
+        city:enteredCity,
+        postcode:enteredPostcode
+      })
   };
 
   const validInputClass = "px-2 border border-[#ccc] rounded max-w-full"

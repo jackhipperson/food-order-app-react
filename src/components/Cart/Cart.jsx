@@ -6,7 +6,9 @@ import Checkout from "../Checkout/Checkout";
 
 const Cart = (props) => {
   const [isOrdering, setIsOrdering] = useState(false);
-  const [hasOrdered, setHasOrdered] = useState(false);
+  const [sendingOrder, setSendingOrder] = useState(false);
+  const [orderSent, setOrderSent] = useState(false);
+  const [error, setError] = useState(null);
   const cartCtx = useContext(CartContext);
   const totalAmount = `£${cartCtx.totalAmount.toFixed(2)}`;
   const hasItems = cartCtx.items.length > 0;
@@ -57,16 +59,78 @@ const Cart = (props) => {
     </div>
   );
 
-  return (
-    <Modal onClose={props.onHideCart}>
+  const handleOrderSubmit = async (userDetails) => {
+    setSendingOrder(true);
+
+    try {
+      await fetch(
+        "https://react-movies-fee5c-default-rtdb.europe-west1.firebasedatabase.app/orders.json",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            user: userDetails,
+            order: cartCtx.items,
+          }),
+        }
+      );
+    } catch (error) {
+      setError(error);
+    }
+
+    if (error) {
+      return;
+    }
+
+    setSendingOrder(false);
+    setOrderSent(true);
+    cartCtx.clearCart();
+  };
+
+  const closeOrderScreenHandler = () => {
+    props.onHideCart();
+    setOrderSent(false);
+  };
+
+  const cartContent = (
+    <>
       {cartItems}
       <div className="flex justify-between items-center font-bold text-2xl my-4 mx-0">
         <span>Total Amount</span>
         <span>{totalAmount}</span>
       </div>
       {!isOrdering && cartButtons}
+      {isOrdering && (
+        <Checkout onSubmit={handleOrderSubmit} onClose={props.onHideCart} />
+      )}
+    </>
+  );
 
-      {isOrdering && <Checkout onClose={props.onHideCart} />}
+  const sendingContent = <p>Sending order...</p>;
+
+  const orderSentContent = (
+    <>
+      <p>Your order has been sucessfully submitted!</p>
+      <div className="text-right">
+        <button
+          onClick={closeOrderScreenHandler}
+          className="cursor-pointer border border-solid border-[#8a2b06] py-2 px-8 rounded-3xl ml-4 active:bg-[#5a1a01] active:border-[#5a1a01] active:text-white hover:bg-[#5a1a01] text-[#8a2b06] hover:border-[#5a1a01] hover:text-white"
+        >
+          Close
+        </button>
+      </div>
+    </>
+  );
+
+  const errorContent = (
+    <p>{error}</p>
+  )
+
+  return (
+    <Modal onClose={props.onHideCart}>
+      {!sendingOrder && !orderSent && !error && cartContent}
+      {sendingOrder && !orderSent && !error && sendingContent}
+      {error && errorContent}
+      {orderSent && orderSentContent}
     </Modal>
   );
 };
